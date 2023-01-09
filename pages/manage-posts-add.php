@@ -1,6 +1,6 @@
 
 <?php
-session_start();
+
 require dirname(__DIR__) . "/parts/header.php";
 ?>
 <div class="container mx-auto my-5" style="max-width: 700px;">

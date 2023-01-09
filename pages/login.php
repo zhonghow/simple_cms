@@ -1,12 +1,27 @@
 <?php
-session_start();
+
+if (Authentication::isLoggedIn()) {
+  header('Location: /dashboard');
+  exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+
+  // Step 1 -> Error Check
+
+  
+}
+
 require dirname(__DIR__) . "/parts/header.php";
 ?>
 <div class="container my-5 mx-auto" style="max-width: 500px;">
   <h1 class="h1 mb-4 text-center">Login</h1>
 
   <div class="card p-4">
-    <form method="GET" action="/dashboard">
+    <form method="POST" action="/dashboard">
       <div class="mb-2">
         <label for="email" class="visually-hidden">Email</label>
         <input type="text" class="form-control" id="email" placeholder="email@example.com" />

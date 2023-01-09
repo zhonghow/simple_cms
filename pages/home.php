@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 require dirname(__DIR__) . "/parts/header.php";
 
 ?>
@@ -46,8 +44,12 @@ require dirname(__DIR__) . "/parts/header.php";
     </div>
 
     <div class="mt-4 d-flex justify-content-center gap-3">
-        <a href="/login" class="btn btn-link btn-sm">Login</a>
-        <a href="/signup" class="btn btn-link btn-sm">Sign Up</a>
+        <?php if (Authentication::isLoggedIn()) : ?>
+            <a href="/logout" class="btn btn-link btn-sm">Log Out</a>
+        <?php else : ?>
+            <a href="/login" class="btn btn-link btn-sm">Login</a>
+            <a href="/signup" class="btn btn-link btn-sm">Sign Up</a>
+        <?php endif ?>
     </div>
 </div>
 

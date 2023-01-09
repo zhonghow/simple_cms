@@ -1,6 +1,42 @@
-
 <?php
-session_start();
+
+
+
+// set CSRF Token
+
+// Check if user is already logged in
+if (Authentication::isLoggedIn()) {
+    header('Location: /dashboard');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Step 1 -> Error Check //
+
+    // Step 2 -> Check if email already exist in database //
+
+    // Step 3 -> Insert user into database //
+    $user_id = Authentication::signUp(
+        $name,
+        $email,
+        $password
+    );
+    // Step 4 -> Assign user data to $_SESSION['user] data //
+    Authentication::setUserSession($user_id);
+
+    // Step 5 -> Redirect user to dashboard //
+    // |-> 5.1 -> Remove CSRF Token
+    // |-> 5.2 -> Redirect user to dashboard
+    header('Location: /dashboard');
+    exit;
+}
+
 require dirname(__DIR__) . "/parts/header.php";
 ?>
 
@@ -8,7 +44,7 @@ require dirname(__DIR__) . "/parts/header.php";
     <h1 class="h1 mb-4 text-center">Sign Up a New Account</h1>
 
     <div class="card p-4">
-        <form method="GET" action="/dashboard">
+        <form method="POST" action="<?= $_SERVER['REQUEST_URI']; ?>">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" />
@@ -30,6 +66,7 @@ require dirname(__DIR__) . "/parts/header.php";
                     Sign Up
                 </button>
             </div>
+            <!-- Insert CSRF Token input -->
         </form>
     </div>
 
@@ -45,4 +82,3 @@ require dirname(__DIR__) . "/parts/header.php";
 <?php
 require dirname(__DIR__) . "/parts/footer.php";
 ?>
-
