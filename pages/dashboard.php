@@ -1,5 +1,5 @@
-
 <?php
+session_start();
 require "parts/header.php";
 ?>
 
@@ -31,7 +31,7 @@ require "parts/header.php";
                         Manage Users
                     </h5>
                     <div class="text-center mt-3">
-                        <a href="href="/manage-users"" class="btn btn-primary btn-sm">Access</a>
+                        <a href="/manage-users" class="btn btn-primary btn-sm">Access</a>
                     </div>
                 </div>
             </div>
@@ -43,6 +43,5 @@ require "parts/header.php";
 </div>
 
 <?php
-require "parts/footer.php";
+require dirname(__DIR__) . "/parts/footer.php";
 ?>
-

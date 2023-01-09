@@ -2,7 +2,7 @@
 
 session_start();
 
-require "parts/header.php";
+require dirname(__DIR__) . "/parts/header.php";
 
 ?>
 
@@ -37,6 +37,7 @@ require "parts/header.php";
     </div>
     <div class="card mb-2">
         <div class="card-body">
+            <h5 class="card-title">Post 1</h5>
             <p class="card-text">This is a post</p>
             <div class="text-end">
                 <a href="/post" class="btn btn-primary btn-sm">Read More</a>
@@ -51,5 +52,5 @@ require "parts/header.php";
 </div>
 
 <?php
-require "parts/footer.php";
+require dirname(__DIR__) . "/parts/footer.php";
 ?>

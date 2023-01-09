@@ -1,5 +1,6 @@
 <?php
-require "parts/header.php";
+session_start();
+require dirname(__DIR__) . "/parts/header.php";
 ?>
 
 
@@ -42,5 +43,5 @@ Curabitur sit amet nisl feugiat, efficitur nibh et, efficitur ex. Morbi nec frin
 
 
 <?php
-require "parts/footer.php";
+require dirname(__DIR__) . "/parts/footer.php";
 ?>
