@@ -1,5 +1,43 @@
 <?php
 
+if (!Authentication::accessControl('user')) {
+  header("Location: /login");
+  exit;
+}
+
+CSRF::generateToken('edit_post_form');
+
+$post = Post::getPostID($_GET['id']);
+
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+  $error = formValidation::errorValidate(
+    $_POST,
+    [
+      'title' => 'required',
+      'content' => 'required',
+      'status' => 'required',
+      'csrf_token' => 'edit_post_form_csrf_token'
+    ]
+  );
+
+  if (!$error) {
+
+    Post::updatePost(
+      $post['id'],
+      $_POST['title'],
+      $_POST['content'],
+      $_POST['status']
+    );
+
+    CSRF::removeToken('edit_post_form');
+
+    header('Location: /manage-posts');
+    exit;
+  }
+}
+
+
 require dirname(__DIR__) . "/parts/header.php";
 ?>
 
@@ -9,20 +47,15 @@ require dirname(__DIR__) . "/parts/header.php";
     <h1 class="h1">Edit Post</h1>
   </div>
   <div class="card mb-2 p-4">
-    <form>
+    <?php require dirname(__DIR__) . "/parts/error.php"; ?>
+    <form action="<?= $_SERVER['REQUEST_URI'] ?>" method="POST">
       <div class="mb-3">
         <label for="post-title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="post-title" value="Post 1" />
+        <input type="text" class="form-control" id="post-title" name="title" value="<?= $post['title'] ?>" />
       </div>
       <div class="mb-3">
         <label for="post-content" class="form-label">Content</label>
-        <textarea class="form-control" id="post-content" rows="10">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris purus risus, euismod ac tristique in, suscipit quis quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum eget dapibus nibh. Pellentesque nec maximus odio. In pretium diam metus, sed suscipit neque porttitor vitae. Vestibulum a mattis eros. Integer fermentum arcu dolor, nec interdum sem tincidunt in. Cras malesuada a neque ut sodales. Nulla facilisi.
-
-Phasellus sodales arcu quis felis sollicitudin vehicula. Aliquam viverra sem ac bibendum tincidunt. Donec pulvinar id purus sagittis laoreet. Sed aliquet ac nisi vehicula rutrum. Proin non risus et erat rhoncus aliquet. Nam sollicitudin facilisis elit, a consequat arcu placerat eu. Pellentesque euismod et est quis faucibus.
-
-Curabitur sit amet nisl feugiat, efficitur nibh et, efficitur ex. Morbi nec fringilla nisl. Praesent blandit pellentesque urna, a tristique nunc lacinia quis. Integer semper cursus lectus, ac hendrerit mi volutpat sit amet. Etiam iaculis arcu eget augue sollicitudin, vel luctus lorem vulputate. Donec euismod eu dolor interdum efficitur. Vestibulum finibus, lectus sed condimentum ornare, velit nisi malesuada ligula, eget posuere augue metus et dolor. Nunc purus eros, ultricies in sapien quis, sagittis posuere risus.
-                        </textarea>
+        <textarea class="form-control" id="post-content" rows="10" name="content"> <?= $post['content'] ?> </textarea>
       </div>
       <div class="mb-3">
         <label for="post-content" class="form-label">Status</label>
@@ -34,7 +67,9 @@ Curabitur sit amet nisl feugiat, efficitur nibh et, efficitur ex. Morbi nec frin
       <div class="text-end">
         <button type="submit" class="btn btn-primary">Update</button>
       </div>
+      <input type="hidden" name="csrf_token" value="<?= CSRF::getToken('edit_post_form') ?>">
     </form>
+
   </div>
   <div class="text-center">
     <a href="/manage-posts" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back to Posts</a>

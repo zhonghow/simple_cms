@@ -1,5 +1,10 @@
 <?php
 
+if (!Authentication::accessControl('user')) {
+    header('Location: /login');
+    exit;
+}
+
 require "parts/header.php";
 ?>
 
@@ -21,21 +26,27 @@ require "parts/header.php";
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card mb-2">
-                <div class="card-body">
-                    <h5 class="card-title text-center">
-                        <div class="mb-1">
-                            <i class="bi bi-people" style="font-size: 3rem;"></i>
+
+        <!-- [Start] Manage User -->
+        <?php if (Authentication::accessControl('admin')) : ?>
+            <div class="col">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">
+                            <div class="mb-1">
+                                <i class="bi bi-people" style="font-size: 3rem;"></i>
+                            </div>
+                            Manage Users
+                        </h5>
+                        <div class="text-center mt-3">
+                            <a href="/manage-users" class="btn btn-primary btn-sm">Access</a>
                         </div>
-                        Manage Users
-                    </h5>
-                    <div class="text-center mt-3">
-                        <a href="/manage-users" class="btn btn-primary btn-sm">Access</a>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php endif ?>
+        <!-- [End] Manage User -->
+
     </div>
     <div class="mt-4 text-center">
         <a href="/" class="btn btn-link btn-sm"><i class="bi bi-arrow-left"></i> Back</a>

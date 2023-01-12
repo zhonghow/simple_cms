@@ -1,6 +1,8 @@
 
 <?php
 
+
+
 require dirname(__DIR__) . "/parts/header.php";
 ?>
 

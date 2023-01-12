@@ -1,9 +1,8 @@
 <?php
 
 
-
 // set CSRF Token
-
+CSRF::generateToken('signup_form');
 // Check if user is already logged in
 if (Authentication::isLoggedIn()) {
     header('Location: /dashboard');
@@ -17,24 +16,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Step 1 -> Error Check //
+    $error = formValidation::errorValidate(
+        $_POST,
+        [
+            'name' => 'required',
+            'email' => 'email_required',
+            'password' => 'passwordLength',
+            'confirm_password' => 'password_match',
+            'csrf_token' => 'signup_form_csrf_token'
+        ]
+    );
 
     // Step 2 -> Check if email already exist in database //
+    if (formValidation::emailUnique($email)) {
+        $error = formValidation::emailUnique($email);
+    }
 
-    // Step 3 -> Insert user into database //
-    $user_id = Authentication::signUp(
-        $name,
-        $email,
-        $password
-    );
-    // Step 4 -> Assign user data to $_SESSION['user] data //
-    Authentication::setUserSession($user_id);
+    if (!$error) {
+        // Step 3 -> Insert user into database //
+        $user_id = Authentication::signUp(
+            $name,
+            $email,
+            $password
+        );
+        // Step 4 -> Assign user data to $_SESSION['user] data //
+        Authentication::setUserSession($user_id);
 
-    // Step 5 -> Redirect user to dashboard //
-    // |-> 5.1 -> Remove CSRF Token
-    // |-> 5.2 -> Redirect user to dashboard
-    header('Location: /dashboard');
-    exit;
+        // Step 5 -> Redirect user to dashboard //
+        // |-> 5.1 -> Remove CSRF Token
+        CSRF::removeToken('signup_form');
+        // |-> 5.2 -> Redirect user to dashboard
+        header('Location: /dashboard');
+        exit;
+    }
 }
 
 require dirname(__DIR__) . "/parts/header.php";
@@ -44,6 +58,7 @@ require dirname(__DIR__) . "/parts/header.php";
     <h1 class="h1 mb-4 text-center">Sign Up a New Account</h1>
 
     <div class="card p-4">
+        <?php require dirname(__DIR__) . "/parts/error.php"; ?>
         <form method="POST" action="<?= $_SERVER['REQUEST_URI']; ?>">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -67,6 +82,7 @@ require dirname(__DIR__) . "/parts/header.php";
                 </button>
             </div>
             <!-- Insert CSRF Token input -->
+            <input type="hidden" name="csrf_token" value="<?= CSRF::getToken('signup_form') ?>">
         </form>
     </div>
 

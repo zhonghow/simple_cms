@@ -5,8 +5,9 @@ session_start();
 require "includes/class-database.php"; // Require all the files
 require "includes/class-user.php";
 require "includes/class-authentication.php";
-
-
+require "includes/class-form-validation.php";
+require "includes/class-csrf.php";
+require "includes/class-post.php";
 
 $path = trim($_SERVER['REQUEST_URI'], "/");
 $path = parse_url($path, PHP_URL_PATH);
