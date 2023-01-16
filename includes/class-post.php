@@ -59,4 +59,15 @@ class Post
             ]
         );
     }
+
+    public static function getPublishedPost()
+    {
+        return Database::connectDatabase()->selectData(
+            'SELECT * FROM posts WHERE status = :status ORDER BY id DESC',
+            [
+                'status' => 'publish'
+            ],
+            true
+        );
+    }
 }

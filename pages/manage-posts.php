@@ -5,6 +5,8 @@ if (!Authentication::accessControl('user')) {
     exit;
 }
 
+$published_post = Post::getPublishedPost();
+
 CSRF::generateToken('delete_post_form');
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -50,7 +52,7 @@ require dirname(__DIR__) . "/parts/header.php";
             </thead>
             <tbody>
                 <?php foreach (Post::getAllPosts() as $index => $post) : ?>
-                    <?php if ($post['user_id'] == $_SESSION['user']['id'] || Authentication::accessControl('admin') || Authentication::accessControl('editor')) : ?>
+                    <?php if ($post['user_id'] == $_SESSION['user']['id'] || Authentication::accessControl('editor')) : ?>
                         <tr>
                             <th scope="row"><?= $index + 1 ?></th>
                             <td><?= $post['title'] ?></td>

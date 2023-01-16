@@ -55,13 +55,17 @@ require dirname(__DIR__) . "/parts/header.php";
       </div>
       <div class="mb-3">
         <label for="post-content" class="form-label">Content</label>
-        <textarea class="form-control" id="post-content" rows="10" name="content"> <?= $post['content'] ?> </textarea>
+        <textarea class="form-control" id="post-content" rows="10" name="content"><?= $post['content'] ?></textarea>
       </div>
       <div class="mb-3">
         <label for="post-content" class="form-label">Status</label>
         <select class="form-control" id="post-status" name="status">
-          <option value="review">Pending for Review</option>
-          <option value="publish">Publish</option>
+          <?php if (Authentication::accessControl('editor')) : ?>
+            <option value="review" <?= $post['status'] == 'review' ? 'selected' : '' ?>>Pending for Review</option>
+            <option value="publish" <?= $post['status'] == 'publish' ? 'selected' : '' ?>>Publish</option>
+          <?php else : ?>
+            <option value="review" <?= $post['status'] == 'review' ? 'selected' : '' ?>>Pending for Review</option>
+          <?php endif ?>
         </select>
       </div>
       <div class="text-end">
